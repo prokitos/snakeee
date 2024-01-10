@@ -5,6 +5,8 @@ int maxHeight;
 int maxWidth;
 std::vector<snake> allSnakes;
 std::vector<std::string> mapp;
+int appleX;
+int appleY;
 
 
 void startGame()
@@ -17,6 +19,9 @@ void startGame()
     first.x = 10;
     first.y = 10;
     allSnakes.push_back(first);
+
+    appleX = 8;
+    appleY = 8;
 
     // главный цикл игры
     while(true)
@@ -31,15 +36,23 @@ void startGame()
             move(-1,0);
         if(GetAsyncKeyState('D'))
             move(1,0);
+        if(GetAsyncKeyState('P'))
+            break;
+
+
+        if(allSnakes.front().x == appleX && allSnakes.front().y == appleY)
+            SnakeEatApple();
+
+
+
 
         clearScreen();
-        addToMap();
+        addFieldToMap();
         addSnakeToMap();
+        addAppleToMap();
         showScreen();
 
 
-        if(GetAsyncKeyState('P'))
-            break;
 
     }
 
@@ -50,6 +63,8 @@ void startGame()
 
 
 }
+
+
 
 void addSnakeToMap()
 {
@@ -59,8 +74,47 @@ void addSnakeToMap()
     }
 }
 
+void addAppleToMap()
+{
+    mapp[appleY][appleX] = 'X';
+}
+
+
+void SnakeEatApple()
+{
+    srand(time(0));
+    appleX = rand() % maxWidth;
+    appleY = rand() % maxHeight;
+
+    snake temp;
+    temp.x = allSnakes.back().x;
+    temp.y = allSnakes.back().y;
+    allSnakes.push_back(temp);
+}
+
+
+void moveMiniSnakes()
+{
+    int tempX = allSnakes.front().x;
+    int tempY = allSnakes.front().y;
+    for(auto &elements : allSnakes)
+    {
+        int tX = elements.x;
+        int tY = elements.y;
+
+        elements.x = tempX;
+        elements.y = tempY;
+
+        tempX = tX;
+        tempY = tY;
+    }
+  
+}
+
 void move(int x, int y)
 {
+    moveMiniSnakes();
+
     int tempX = allSnakes.front().x;
     int tempY = allSnakes.front().y;
 
@@ -82,7 +136,7 @@ void move(int x, int y)
 
 }
 
-void addToMap()
+void addFieldToMap()
 {
     mapp = {};
 

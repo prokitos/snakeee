@@ -12,9 +12,12 @@ struct snake
 
 
 void move(int x, int y);
-void addToMap();
+void moveMiniSnakes();
+void addFieldToMap();
 void showScreen();
 void addSnakeToMap();
+void addAppleToMap();
+void SnakeEatApple();
 void startGame();
 void clearScreen();
 
