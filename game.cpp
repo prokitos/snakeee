@@ -7,24 +7,27 @@ std::vector<snake> allSnakes;
 std::vector<std::string> mapp;
 int appleX;
 int appleY;
+bool infinity = true;
 
 
 void startGame()
 {
 
-    maxHeight = 20;
-    maxWidth =  20;
+    std::cout << "place a map height: " << std::endl;
+    std::cin >> maxHeight;
+    std::cout << "place a map width: " << std::endl;
+    std::cin >> maxWidth;
 
     snake first;
-    first.x = 10;
-    first.y = 10;
+    first.x = 1;
+    first.y = 1;
     allSnakes.push_back(first);
 
-    appleX = 8;
-    appleY = 8;
+    appleX = 2;
+    appleY = 2;
 
     // главный цикл игры
-    while(true)
+    while(infinity)
     {
 
         int temp = _getch();
@@ -45,19 +48,23 @@ void startGame()
 
 
 
-
         clearScreen();
         addFieldToMap();
         addSnakeToMap();
         addAppleToMap();
         showScreen();
-
+        
 
 
     }
 
+    clearScreen();
+    std::cout << std::endl << std::endl << std::endl;
+    std::cout << "you loose" << std::endl;
+    std::string ever;
+    std::cin >> ever;
     
-
+    
 
     
 
@@ -131,8 +138,14 @@ void move(int x, int y)
     if(tempY >= maxHeight)
     tempY = 0;
 
-    tempX = allSnakes.front().x = tempX;
-    tempY = allSnakes.front().y = tempY;
+    allSnakes.front().x = tempX;
+    allSnakes.front().y = tempY;
+
+    if(mapp.size() > 0 && mapp[tempY][tempX] == 'O')
+    {
+        infinity = false;
+    }
+    
 
 }
 
