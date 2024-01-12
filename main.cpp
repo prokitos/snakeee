@@ -23,10 +23,9 @@ void consoleClear()
 int main()
 {
     consoleClear();
-
-    startGame();
+    Game game;
+    game.startGame();
     
-
     return 0;
 }
 

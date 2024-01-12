@@ -1,35 +1,29 @@
 #include "game.h"
 #include <winuser.h>
 
-int maxHeight;
-int maxWidth;
-std::vector<snake> allSnakes;
-std::vector<std::string> mapp;
-int appleX;
-int appleY;
-bool infinity = true;
 
-
-void startGame()
+void Game::startGame()
 {
-
     std::cout << "place a map height: " << std::endl;
     std::cin >> maxHeight;
     std::cout << "place a map width: " << std::endl;
     std::cin >> maxWidth;
 
-    snake first;
-    first.x = 1;
-    first.y = 1;
-    allSnakes.push_back(first);
+    snake mainSnake;
+    mainSnake.x = 1;
+    mainSnake.y = 1;
+    allSnakes.push_back(mainSnake);
 
-    appleX = 2;
-    appleY = 2;
+    applePos.x = 2;
+    applePos.y = 2;
 
-    // главный цикл игры
+    mainLoop();
+}
+
+void Game::mainLoop()
+{
     while(infinity)
     {
-
         int temp = _getch();
         if(GetAsyncKeyState('W'))
             move(0,-1);
@@ -42,38 +36,21 @@ void startGame()
         if(GetAsyncKeyState('P'))
             break;
 
-
-        if(allSnakes.front().x == appleX && allSnakes.front().y == appleY)
+        if(allSnakes.front().x == applePos.x && allSnakes.front().y == applePos.y)
             SnakeEatApple();
 
-
-
+        // отрисовка игры
         clearScreen();
         addFieldToMap();
         addSnakeToMap();
         addAppleToMap();
         showScreen();
-        
-
-
     }
 
-    clearScreen();
-    std::cout << std::endl << std::endl << std::endl;
-    std::cout << "you loose" << std::endl;
-    std::string ever;
-    std::cin >> ever;
-    
-    
-
-    
-
-
+    endGame();
 }
 
-
-
-void addSnakeToMap()
+void Game::addSnakeToMap()
 {
     for(auto snake : allSnakes)
     {
@@ -81,44 +58,26 @@ void addSnakeToMap()
     }
 }
 
-void addAppleToMap()
+void Game::addAppleToMap()
 {
-    mapp[appleY][appleX] = 'X';
+    mapp[applePos.y][applePos.x] = 'X';
 }
 
-
-void SnakeEatApple()
+void Game::SnakeEatApple()
 {
     srand(time(0));
-    appleX = rand() % maxWidth;
-    appleY = rand() % maxHeight;
+    applePos.x = rand() % maxWidth;
+    applePos.y = rand() % maxHeight;
 
-    snake temp;
-    temp.x = allSnakes.back().x;
-    temp.y = allSnakes.back().y;
-    allSnakes.push_back(temp);
+    snake newSnake;
+    newSnake.x = allSnakes.back().x;
+    newSnake.y = allSnakes.back().y;
+    allSnakes.push_back(newSnake);
+
+    score ++;
 }
 
-
-void moveMiniSnakes()
-{
-    int tempX = allSnakes.front().x;
-    int tempY = allSnakes.front().y;
-    for(auto &elements : allSnakes)
-    {
-        int tX = elements.x;
-        int tY = elements.y;
-
-        elements.x = tempX;
-        elements.y = tempY;
-
-        tempX = tX;
-        tempY = tY;
-    }
-  
-}
-
-void move(int x, int y)
+void Game::move(int x, int y)
 {
     moveMiniSnakes();
 
@@ -146,10 +105,26 @@ void move(int x, int y)
         infinity = false;
     }
     
-
 }
 
-void addFieldToMap()
+void Game::moveMiniSnakes()
+{
+    int tempX = allSnakes.front().x;
+    int tempY = allSnakes.front().y;
+    for(auto &elements : allSnakes)
+    {
+        int tX = elements.x;
+        int tY = elements.y;
+
+        elements.x = tempX;
+        elements.y = tempY;
+
+        tempX = tX;
+        tempY = tY;
+    }
+}
+
+void Game::addFieldToMap()
 {
     mapp = {};
 
@@ -169,12 +144,9 @@ void addFieldToMap()
     mapp.push_back("");
     for(int j = 0; j < maxWidth + 1; j++)
     mapp[maxWidth] += '`';
-
-
 }
 
-
-void showScreen()
+void Game::showScreen()
 {
     system("color 1");
     for(int i = 0; i < maxHeight + 1; i++)
@@ -185,11 +157,22 @@ void showScreen()
         }
         std::cout << std::endl;
     }
-
-    
 }
 
-void clearScreen()
+void Game::clearScreen()
 {
     system("cls");
 }
+
+void Game::endGame()
+{
+    clearScreen();
+    std::cout << std::endl << std::endl << std::endl;
+    std::cout << "you loose" << std::endl;
+    std::cout << "score: " << score;
+    std::string ever;
+    std::cin >> ever;
+}
+
+
+
